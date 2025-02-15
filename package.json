@@ -1,0 +1,26 @@
+{
+  "name": "pokemon-battler-own-practise",
+  "version": "1.0.0",
+  "description": "For this sprint, head to Northcoder's L2C app:",
+  "main": "pokemon.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/J-Pierce/pokemon-battler-own-practise.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/J-Pierce/pokemon-battler-own-practise/issues"
+  },
+  "homepage": "https://github.com/J-Pierce/pokemon-battler-own-practise#readme",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "dependencies": {
+    "inquirer": "^8.2.6"
+  }
+}
