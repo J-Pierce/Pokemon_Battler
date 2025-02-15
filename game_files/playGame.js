@@ -5,74 +5,72 @@ const makePokemon = require("./pokemonCreator")
 const pokemonChoices = Object.keys(makePokemon())
 
 let name
-let pokemonChoice1
-let beltSelection
+let trainer
+let chosenPokemon
 
-const zeroQuestions = [
-    {
-      type: 'input',
-      name: 'name',
-      message: 'What is your name?',
-      default: 'Ash',
-    },
-    {
-    type: 'checkbox',
-    name: 'pokemon',
-    require: false,
-    message: 'Choose 6 pokemon to equip to your belt!',
-    choices: pokemonChoices,
-    }
-]
-
-const firstQuestions = [
-    {
-    type: 'list',
-    name: 'pokemon',
-    message: 'Which pokemon do you want to send out first?',
-    choices: pokemonChoices,
-    }
-];
-
-const secondQuestions = [
-    {
-    type: 'list',
-    name: 'pokemon',
-    message: 'Which pokemon do you wish to battle?',
-    choices: pokemonChoices,
-    }
-];
-
-function playGame() {
-    
-    inquirer.prompt(zeroQuestions)
-    
-    .then(function (zeroAnswers)
-    {   
-        name = zeroAnswers.name
-        beltSelection = zeroAnswers.pokemon
-        return inquirer.prompt(firstQuestions)
+function chooseStartingPokemon () {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'name',
+            message: 'What is your name?',
+            default: 'Ash',
+        },
+        {
+          name: "startingPokemon",
+          type: "checkbox",
+          message: "Choose 6 pokemon to equip to your belt:",
+          loop: false,
+          choices: pokemonChoices,
+    }])
+    .then((answer) => {
+        if (answer.startingPokemon.length < 6) {
+            console.log("That wasn't enough pokemon, you need to choose 6!");
+            chooseStartingPokemon();
+        }
+        else if (answer.startingPokemon.length > 6) {
+            console.log("That was too many pokemon, you need to choose 6!");
+            chooseStartingPokemon();
+        }
+        name = answer.name
+        trainer = new Trainer(answer.startingPokemon[0], answer.startingPokemon[1], answer.startingPokemon[2], answer.startingPokemon[3], answer.startingPokemon[4], answer.startingPokemon[5])
+        trainer.name = name
+        console.log(trainer)
+        console.log("Your name is: ", name)
+        console.log("Your starting belt now contains: ",);
+        return answer
     })
+    .then((answer) => {
+        inquirer.prompt([
+            {
+              name: "chosenPokemon",
+              type: "list",
+              message: "Choose which pokemon from your belt to battle first!:",
+              loop: false,
+              choices: answer.startingPokemon
+            }])
+          .then((answer) => {
+            chosenPokemon = answer.chosenPokemon
+            console.log(trainer)
+            console.log(chosenPokemon)
+          })
 
-    .then(function (firstAnswers) 
-    { 
-        pokemonChoice1 = firstAnswers.pokemon
-        return inquirer.prompt(secondQuestions);
-    })
-    .then(function(secondAnswers) 
-    {
-        const pokemon1 = makePokemon(pokemonChoice1)
-        
-        const pokemonChoice2 = secondAnswers.pokemon
-        const pokemon2 = makePokemon(pokemonChoice2)
-        
-        const trainer1 = new Trainer(pokemon1)
-        const trainer2 = new Trainer(pokemon2)
-        
-        console.log("\n\nBattle begins:\n\n")
-        const battle = new Battle(trainer1,pokemonChoice1,trainer2,pokemonChoice2)
-        battle.fight()
-        return
-    })
-}
+    .then(() => {
+        inquirer.prompt([
+            {
+                name: "opponentPokemon",
+                type: "checkbox",
+                message: "Choose which pokemon you want to battle:",
+                loop: false,
+                choices: pokemonChoices,
+            }])
+            .then((out) => {
+                console.log(out)
+                const opponentPokemon = out.opponentPokemon
+                console.log(opponentPokemon)
+            })
+         })
+    })      
+  };
 
-playGame();
+chooseStartingPokemon()
