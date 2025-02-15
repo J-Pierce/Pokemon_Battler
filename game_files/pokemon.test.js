@@ -69,7 +69,7 @@ describe("Test class - Pokemon", ()=>{
 
             // Assert
             expect(output).toBe(18);
-            expect(consolespy).toHaveBeenCalledWith("Eevee used Headbutt")
+            expect(consolespy).toHaveBeenCalledWith("\n\tEevee used Headbutt")
         })
 
         test("hasFainted returns false if a pokemon hasn't fainted", () => 
@@ -447,7 +447,7 @@ describe("\n\n\nTest class - Pokeball", () => {
 
             //Assert
             expect(consolespy).toHaveBeenCalledWith("GO Eevee!!")
-            expect(consolespy).toHaveBeenCalledWith("Pokeball is now empty")
+            expect(consolespy).toHaveBeenCalledWith("\t... Pokeball is now empty\n")
         })
     })
 })

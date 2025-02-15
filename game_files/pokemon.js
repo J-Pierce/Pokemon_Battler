@@ -14,7 +14,7 @@ class Pokemon {
         )
     }
     useMove () {
-        console.log(`\t${this.name} used ${this.move}`)
+        console.log(`\n\t${this.name} used ${this.move}`)
         return this.attackDamage
     }
     hasFainted () {
@@ -182,8 +182,6 @@ class Trainer {
     }
 }
 
-
-
 // Creates Pokemon Battle
 class Battle {
     constructor (trainer1, choice1, trainer2, choice2) {
@@ -197,7 +195,7 @@ class Battle {
         if(defender.isEffectiveAgainst(attacker)){
             defender.takeDamage(attacker.useMove() * 0.75)
             console.log("\tIt's not very effective!")
-            console.log(`\t${defender.name}'s HP reduces to ${defender.hitPoints}\n`)
+            console.log(`\t${defender.name}'s HP reduces to ${defender.hitPoints}`)
         }
         else if(defender.isWeakTo(attacker)){
             defender.takeDamage(attacker.useMove() * 1.25)
@@ -218,7 +216,7 @@ class Battle {
         console.log(`${this.pokemon2.name}'s starting HP: ${this.pokemon2.hitPoints}`)
 
         while (!this.pokemon1.hasFainted() && !this.pokemon2.hasFainted()) {
-            console.log("\nNew Round!:\n")
+            console.log("\n\nNew Round!:")
             this.attack(this.pokemon1, this.pokemon2)
             
             if(!this.pokemon1.hasFainted() && !this.pokemon2.hasFainted()) {
