@@ -1,5 +1,5 @@
 const inquirer = require('inquirer');
-const {Pokemon, Normal, Fire, Water, Grass, Pokeball, Trainer, Battle} = require("./pokemon")
+const {Pokemon, Normal, Fire, Water, Grass, Pokeball, Trainer, Battle} = require("./pokemonClasses")
 const makePokemon = require("./pokemonCreator")
 
 const pokemonChoices = Object.keys(makePokemon())

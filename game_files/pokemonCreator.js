@@ -1,4 +1,4 @@
-const {Pokemon, Normal, Fire, Water, Grass} = require("./pokemon")
+const {Pokemon, Normal, Fire, Water, Grass} = require("./pokemonClasses")
 
 function makePokemon(pokemonName = "Empty") {
     const pokemonList = { 
