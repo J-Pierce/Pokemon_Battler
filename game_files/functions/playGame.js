@@ -127,3 +127,22 @@ chooseStartingPokemon(userBelt)
 
     battle.fight();
   });
+
+/*
+ next steps I want to add:
+  - choose next pokemon out of ones left (not fainted) to go into battle
+  - carry on choosing and battling until all 6 pokemon in a players belt have fainted
+  - player with pokemon left wins 
+
+  - opponent chooses belt pokemon and pokemon to battle automatically (no user input)
+  - can set opponents difficulty to effect how strategically effective its choices are
+
+Recommended next steps:
+- critical hit system randomly awards pokemon triple damage
+- ability to swap pokemon mid battle, uses up attack for that round
+- pokemon have multiple moves user can select each round
+    - move modifies attack damage
+    - moves have a finite amount of uses determined by its PP (power points)
+    - once PP runs out move cant be used
+    - when all moves have run out pokemon 'struggles' damaging itself with its base attack damage
+*/
