@@ -19,7 +19,7 @@ afterEach(() => {
 });
 
 describe("Creates extended classes - namedPokemon", () => {
-  test("creates extended class of Charmander", () => {
+  test("creates extended class of Charmander with correct properties", () => {
     //Arrange
     const pokemon = new Charmander("Charmander", 44, 17, "ember");
 
@@ -37,9 +37,10 @@ describe("Creates extended classes - namedPokemon", () => {
     expect(outputDamage).toBe(17);
     expect(outputMove).toBe("ember");
     expect(outputType).toBe("Fire");
+    expect(pokemon instanceof Charmander).toBe(true);
   });
 
-  test("creates extended class of Squirtle", () => {
+  test("creates extended class of Squirtle with correct properties", () => {
     //Arrange
     const pokemon = new Squirtle("Squirtle", 44, 16, "water gun");
 
@@ -57,8 +58,9 @@ describe("Creates extended classes - namedPokemon", () => {
     expect(outputDamage).toBe(16);
     expect(outputMove).toBe("water gun");
     expect(outputType).toBe("Water");
+    expect(pokemon instanceof Squirtle).toBe(true);
   });
-  test("creates extended class of Bulbasaur", () => {
+  test("creates extended class of Bulbasaur with correct properties", () => {
     //Arrange
     const pokemon = new Bulbasaur("Bulbasaur", 45, 16, "vine whip");
 
@@ -76,8 +78,9 @@ describe("Creates extended classes - namedPokemon", () => {
     expect(outputDamage).toBe(16);
     expect(outputMove).toBe("vine whip");
     expect(outputType).toBe("Grass");
+    expect(pokemon instanceof Bulbasaur).toBe(true);
   });
-  test("creates extended class of Rattata", () => {
+  test("creates extended class of Rattata with correct properties", () => {
     //Arrange
     const pokemon = new Rattata("Rattata", 55, 18, "tackle");
 
@@ -95,5 +98,6 @@ describe("Creates extended classes - namedPokemon", () => {
     expect(outputDamage).toBe(18);
     expect(outputMove).toBe("tackle");
     expect(outputType).toBe("Normal");
+    expect(pokemon instanceof Rattata).toBe(true);
   });
 });
