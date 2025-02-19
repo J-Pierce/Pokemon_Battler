@@ -1,9 +1,11 @@
 class Pokemon {
-  constructor(name, hitPoints, attackDamage, move) {
+  constructor(name, hitPoints, attackDamage, move, critChance, critModifier) {
     this.name = name;
     this.hitPoints = hitPoints;
     this.attackDamage = attackDamage;
     this.move = move;
+    this.critChance = critChance;
+    this.critModifier = critModifier;
   }
   takeDamage(damage) {
     if (this.hitPoints - damage > 0) {

@@ -1,8 +1,8 @@
 const { Pokemon } = require("./pokemonClass");
 
 class Normal extends Pokemon {
-  constructor(name, hitPoints, attackDamage, move) {
-    super(name, hitPoints, attackDamage, move);
+  constructor(name, hitPoints, attackDamage, move, critChance, critModifier) {
+    super(name, hitPoints, attackDamage, move, critChance, critModifier);
     this.type = "Normal";
   }
   isEffectiveAgainst(pokemon) {
@@ -13,8 +13,8 @@ class Normal extends Pokemon {
   }
 }
 class Fire extends Pokemon {
-  constructor(name, hitPoints, attackDamage, move) {
-    super(name, hitPoints, attackDamage, move);
+  constructor(name, hitPoints, attackDamage, move, critChance, critModifier) {
+    super(name, hitPoints, attackDamage, move, critChance, critModifier);
     this.type = "Fire";
   }
   isEffectiveAgainst(pokemon) {
@@ -33,8 +33,8 @@ class Fire extends Pokemon {
   }
 }
 class Water extends Pokemon {
-  constructor(name, hitPoints, attackDamage, move) {
-    super(name, hitPoints, attackDamage, move);
+  constructor(name, hitPoints, attackDamage, move, critChance, critModifier) {
+    super(name, hitPoints, attackDamage, move, critChance, critModifier);
     this.type = "Water";
   }
   isEffectiveAgainst(pokemon) {
@@ -53,8 +53,8 @@ class Water extends Pokemon {
   }
 }
 class Grass extends Pokemon {
-  constructor(name, hitPoints, attackDamage, move) {
-    super(name, hitPoints, attackDamage, move);
+  constructor(name, hitPoints, attackDamage, move, critChance, critModifier) {
+    super(name, hitPoints, attackDamage, move, critChance, critModifier);
     this.type = "Grass";
   }
   isEffectiveAgainst(pokemon) {
