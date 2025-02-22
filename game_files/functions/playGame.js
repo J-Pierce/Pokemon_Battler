@@ -108,11 +108,11 @@ chooseStartingPokemon(userBelt)
   - carry on choosing and battling until all 6 pokemon in a players belt have fainted
   - player with pokemon left wins 
 
-  - opponent chooses belt pokemon and pokemon to battle automatically (no user input)
-  - can set opponents difficulty to effect how strategically effective its choices are
+  ✅ opponent chooses belt pokemon and pokemon to battle automatically (no user input)
+  ✅ can set opponents difficulty to effect how strategically effective its choices are
 
 Recommended next steps:
-- critical hit system randomly awards pokemon triple damage
+✅ critical hit system randomly awards pokemon triple damage
 - ability to swap pokemon mid battle, uses up attack for that round
 - pokemon have multiple moves user can select each round
     - move modifies attack damage

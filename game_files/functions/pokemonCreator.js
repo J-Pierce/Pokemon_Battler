@@ -43,6 +43,7 @@ const pokemonList = {
   ),
   Rattata: new Normal("Rattata", 30, 56, "Tackle", critChance, critModifier),
 };
+
 function makePokemon(pokemonName = "Empty") {
   if (pokemonName === "Empty") {
     return pokemonList;
