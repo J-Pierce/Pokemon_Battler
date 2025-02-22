@@ -12,6 +12,7 @@ const { makePokemon, pokemonByType } = require("./pokemonCreator");
 
 function opponentChoices(difficulty, player, playerPokemon) {
   const effectiveType = { Fire: "Water", Water: "Grass", Grass: "Fire" };
+  const weakType = { Fire: "Grass", Water: "Fire", Grass: "Water" };
   const pokemonTypeList = pokemonByType();
   const opponentPokemon = [];
   let opponentChoicePosition = 0;
@@ -28,6 +29,35 @@ function opponentChoices(difficulty, player, playerPokemon) {
         const effectivePokemonList = pokemonTypeList[effectiveType[type]]; //.filter(
         if (effectivePokemonList.length > 0) {
           opponentPokemon[i] = effectivePokemonList.shift();
+          // console.log("\nPlayer pokemon: ", player.belt[i].pokemonInside);
+          // console.log("Opponent pokemon chosen: ", opponentPokemon[i]);
+          // console.log("Pokemon type list: ", pokemonTypeList);
+        } else {
+          opponentPokemon[i] = normalPokemonList.shift();
+          // console.log("\nPlayer pokemon: ", player.belt[i].pokemonInside);
+          // console.log("Opponent pokemon chosen: ", opponentPokemon[i]);
+          // console.log("Pokemon type list: ", pokemonTypeList);
+        }
+      } else {
+        opponentPokemon[i] = normalPokemonList.shift();
+        // console.log("\nPlayer pokemon: ", player.belt[i].pokemonInside);
+        // console.log("Opponent pokemon chosen: ", opponentPokemon[i]);
+        // console.log("Pokemon type list: ", pokemonTypeList);
+      }
+    }
+  }
+
+  if (difficulty === "Easy") {
+    for (let i = 1; i < 7; i++) {
+      if (player.belt[i].pokemonInside.name === playerPokemon) {
+        opponentChoicePosition = i;
+      }
+      const type = player.belt[i].pokemonInside.type;
+
+      if (["Fire", "Water", "Grass"].includes(type)) {
+        const weakPokemonList = pokemonTypeList[weakType[type]]; //.filter(
+        if (weakPokemonList.length > 0) {
+          opponentPokemon[i] = weakPokemonList.shift();
           // console.log("\nPlayer pokemon: ", player.belt[i].pokemonInside);
           // console.log("Opponent pokemon chosen: ", opponentPokemon[i]);
           // console.log("Pokemon type list: ", pokemonTypeList);

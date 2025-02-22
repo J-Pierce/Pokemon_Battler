@@ -14,6 +14,12 @@ const opponentChoices = require("./opponentChoices");
 
 const userBelt = [
   {
+    type: "list",
+    name: "difficulty",
+    message: "What game difficulty would you like to play?",
+    choices: ["Easy", "Hard"],
+  },
+  {
     type: "input",
     name: "name",
     message: "What is your name?",
@@ -55,7 +61,7 @@ chooseStartingPokemon(userBelt)
   .then((data) => {
     const userPokemon = data.startingPokemon;
     userStartingPokemon[0].choices = data.startingPokemon;
-
+    const difficulty = data.difficulty;
     const trainer = new Trainer(
       makePokemon(userPokemon[0]),
       makePokemon(userPokemon[1]),
@@ -66,18 +72,25 @@ chooseStartingPokemon(userBelt)
       data.name
     );
 
-    return trainer;
+    return [trainer, difficulty];
   })
   .then((players) => {
-    return Promise.all([players, inquirer.prompt(userStartingPokemon)]);
+    return Promise.all([...players, inquirer.prompt(userStartingPokemon)]);
   })
   .then((battleData) => {
+    console.log(battleData);
     const trainer = battleData[0];
-    const chosenPokemon = battleData[1].chosenPokemon;
+    const difficulty = battleData[1];
+    const chosenPokemon = battleData[2].chosenPokemon;
 
-    const opponentInfo = opponentChoices("Hard", trainer, chosenPokemon);
+    const opponentInfo = opponentChoices(difficulty, trainer, chosenPokemon);
     const opponent = opponentInfo.opponent;
     const opponentPokemon = opponentInfo.opponentChoice;
+
+    console.log(trainer);
+    console.log(chosenPokemon);
+    console.log(opponent);
+    console.log(opponentPokemon);
 
     const battle = new Battle(
       trainer,
