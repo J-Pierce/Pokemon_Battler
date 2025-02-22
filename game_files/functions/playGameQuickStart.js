@@ -9,7 +9,7 @@ const {
   Trainer,
   Battle,
 } = require("../classes/indexClasses");
-const { makePokemon } = require("./pokemonCreator");
+const { makePokemon, pokemonByType } = require("./pokemonCreator");
 
 const userStartingPokemon = [
   {

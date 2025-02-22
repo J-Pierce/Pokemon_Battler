@@ -8,7 +8,7 @@ const {
   Trainer,
   Battle,
 } = require("../classes/indexClasses");
-const { makePokemon } = require("../functions/pokemonCreator");
+const { makePokemon, pokemonByType } = require("../functions/pokemonCreator");
 
 let pokemonList;
 let consolespy;

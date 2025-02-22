@@ -4,7 +4,7 @@ const {
   Squirtle,
   Bulbasaur,
 } = require("../classes/namedPokemonClasses");
-const { makePokemon } = require("../functions/pokemonCreator");
+const { makePokemon, pokemonByType } = require("../functions/pokemonCreator");
 
 let pokemonList;
 let consolespy;
