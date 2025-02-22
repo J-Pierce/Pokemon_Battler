@@ -10,6 +10,7 @@ const {
   Battle,
 } = require("../classes/indexClasses");
 const { makePokemon, pokemonByType } = require("./pokemonCreator");
+const opponentChoices = require("./opponentChoices");
 
 const userBelt = [
   {
@@ -27,31 +28,11 @@ const userBelt = [
   },
 ];
 
-const opponentBelt = [
-  {
-    name: "startingPokemon",
-    type: "checkbox",
-    message: "Choose 6 pokemon to equip to your opponents belt:",
-    loop: false,
-    choices: Object.keys(makePokemon()),
-  },
-];
-
 const userStartingPokemon = [
   {
     type: "list",
     name: "chosenPokemon",
     message: "Which pokemon would you like to send out to battle first?",
-    choices: [],
-  },
-];
-
-const opponentStartingPokemon = [
-  {
-    type: "list",
-    name: "opponentPokemon",
-    message: "Which pokemon should your opponent send out first to battle?",
-    loop: false,
     choices: [],
   },
 ];
@@ -71,15 +52,9 @@ function chooseStartingPokemon(question) {
 }
 
 chooseStartingPokemon(userBelt)
-  .then((userChoice) => {
-    return Promise.all([userChoice, chooseStartingPokemon(opponentBelt)]);
-  })
   .then((data) => {
-    const userPokemon = data[0].startingPokemon;
-    const opponentPokemon = data[1].startingPokemon;
-
-    userStartingPokemon[0].choices = data[0].startingPokemon;
-    opponentStartingPokemon[0].choices = data[1].startingPokemon;
+    const userPokemon = data.startingPokemon;
+    userStartingPokemon[0].choices = data.startingPokemon;
 
     const trainer = new Trainer(
       makePokemon(userPokemon[0]),
@@ -88,35 +63,21 @@ chooseStartingPokemon(userBelt)
       makePokemon(userPokemon[3]),
       makePokemon(userPokemon[4]),
       makePokemon(userPokemon[5]),
-      data[0].name
+      data.name
     );
 
-    const opponent = new Trainer(
-      makePokemon(opponentPokemon[0]),
-      makePokemon(opponentPokemon[1]),
-      makePokemon(opponentPokemon[2]),
-      makePokemon(opponentPokemon[3]),
-      makePokemon(opponentPokemon[4]),
-      makePokemon(opponentPokemon[5]),
-      "Opponent"
-    );
-
-    return { trainer, opponent };
+    return trainer;
   })
   .then((players) => {
     return Promise.all([players, inquirer.prompt(userStartingPokemon)]);
   })
-  .then((trainerData) => {
-    return Promise.all([
-      ...trainerData,
-      inquirer.prompt(opponentStartingPokemon),
-    ]);
-  })
   .then((battleData) => {
-    const trainer = battleData[0]["trainer"];
-    const opponent = battleData[0]["opponent"];
-    const chosenPokemon = battleData[1]["chosenPokemon"];
-    const opponentPokemon = battleData[2]["opponentPokemon"];
+    const trainer = battleData[0];
+    const chosenPokemon = battleData[1].chosenPokemon;
+
+    const opponentInfo = opponentChoices("Hard", trainer, chosenPokemon);
+    const opponent = opponentInfo.opponent;
+    const opponentPokemon = opponentInfo.opponentChoice;
 
     const battle = new Battle(
       trainer,

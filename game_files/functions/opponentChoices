@@ -52,7 +52,8 @@ function opponentChoices(difficulty, player, playerPokemon) {
     opponentPokemon[3],
     opponentPokemon[4],
     opponentPokemon[5],
-    opponentPokemon[6]
+    opponentPokemon[6],
+    "Opponent"
   );
 
   const opponentChoice =
