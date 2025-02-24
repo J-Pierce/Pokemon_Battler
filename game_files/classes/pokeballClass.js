@@ -13,7 +13,7 @@ class Pokeball {
     } else {
       if (this.pokemonInside === "Empty") {
         this.pokemonInside = pokemon;
-        console.log(`You caught ${pokemon.name}!`);
+        console.log(`\t... caught ${pokemon.name}!`);
       } else {
         console.log(`Cannot catch ${pokemon.name}, Pokeball is full!`);
       }

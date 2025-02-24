@@ -10,7 +10,7 @@ const {
   Battle,
 } = require("../classes/indexClasses");
 const { makePokemon, pokemonByType } = require("./pokemonCreator");
-const opponentChoices = require("./opponentChoices");
+const opponentBelt = require("./opponentChoices.js");
 
 const userBelt = [
   {
@@ -38,7 +38,7 @@ const userStartingPokemon = [
   {
     type: "list",
     name: "chosenPokemon",
-    message: "Which pokemon would you like to send out to battle first?",
+    message: "Which pokemon would you like to send out to battle",
     choices: [],
   },
 ];
@@ -57,11 +57,112 @@ function chooseStartingPokemon(question) {
   });
 }
 
-chooseStartingPokemon(userBelt)
-  .then((data) => {
-    const userPokemon = data.startingPokemon;
-    userStartingPokemon[0].choices = data.startingPokemon;
-    const difficulty = data.difficulty;
+function pokemonFight(battle, playerChoice) {
+  // console.log("Battle: ", battle);
+  // console.log("Difficulty: ", difficulty);
+  // console.log("Player choice: ", playerChoice);
+
+  let pokemonPosition = 0;
+  for (let i = 1; i < 7; i++) {
+    if (battle.player.belt[i].pokemonInside.name === playerChoice.chosenPokemon)
+      pokemonPosition = i;
+  }
+  const playerPokemonChosen = playerChoice.chosenPokemon;
+  const opponentPokemonChosen =
+    battle.opponent.belt[pokemonPosition].pokemonInside.name;
+
+  const playerPokemon = battle.player.getPokemon(playerPokemonChosen);
+  const opponentPokemon = battle.opponent.getPokemon(opponentPokemonChosen);
+
+  console.log(
+    `\n${playerPokemon.name}'s starting HP: ${playerPokemon.hitPoints}`
+  );
+  console.log(
+    `${opponentPokemon.name}'s starting HP: ${opponentPokemon.hitPoints}`
+  );
+
+  while (!playerPokemon.hasFainted() && !opponentPokemon.hasFainted()) {
+    console.log("\n\nNew Round!:");
+    battle.attack(playerPokemon, opponentPokemon);
+
+    if (!playerPokemon.hasFainted() && !opponentPokemon.hasFainted()) {
+      battle.attack(opponentPokemon, playerPokemon);
+    }
+  }
+  if (playerPokemon.hasFainted() && !opponentPokemon.hasFainted()) {
+    console.log(
+      `\n\n${playerPokemon.name} has fainted, ${opponentPokemon.name} has won the fight!\n\n`
+    );
+    battle.playerPokemonFainted++;
+  }
+  if (!playerPokemon.hasFainted() && opponentPokemon.hasFainted()) {
+    console.log(
+      `\n\n${opponentPokemon.name} has fainted, ${playerPokemon.name} has won the fight!\n\n`
+    );
+    battle.opponentPokemonFainted++;
+  }
+
+  battle.player.catch(playerPokemon);
+  battle.opponent.catch(opponentPokemon);
+}
+
+async function playerChoosePokemon(battle) {
+  try {
+    const pokemonAlive = [];
+    if (battle.playerPokemonFainted > 0) {
+      for (const pokeball in battle.player.belt) {
+        if (!battle.player.belt[pokeball].pokemonInside.hasFainted()) {
+          pokemonAlive.push(battle.player.belt[pokeball].pokemonInside.name);
+        }
+      }
+    } else {
+      for (const pokeball in battle.player.belt) {
+        pokemonAlive.push(battle.player.belt[pokeball].pokemonInside.name);
+      }
+    }
+
+    userStartingPokemon[0].choices = pokemonAlive;
+
+    return inquirer.prompt(userStartingPokemon);
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function runBattle(battle) {
+  try {
+    while (
+      battle.playerPokemonFainted < 6 &&
+      battle.opponentPokemonFainted < 6
+    ) {
+      let playerChoice = await playerChoosePokemon(battle);
+      pokemonFight(battle, playerChoice);
+    }
+
+    console.log("Player pokemon fainted: ", battle.playerPokemonFainted);
+    console.log("Opponent pokemon fainted: ", battle.opponentPokemonFainted);
+
+    if (battle.playerPokemonFainted === 6) {
+      console.log(
+        `\n\nAll of ${battle.player.name}'s Pokemon have fainted ... ${battle.opponent.name} wins the Battle !!!`
+      );
+    }
+    if (battle.opponentPokemonFainted === 6) {
+      console.log(
+        `\n\nAll of ${battle.opponent.name}'s Pokemon have fainted ... ${battle.player.name} wins the Battle !!!`
+      );
+    }
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function playGame() {
+  try {
+    const firstQuestion = await chooseStartingPokemon(userBelt);
+    const userPokemon = firstQuestion.startingPokemon;
+
+    const difficulty = firstQuestion.difficulty;
     const trainer = new Trainer(
       makePokemon(userPokemon[0]),
       makePokemon(userPokemon[1]),
@@ -69,38 +170,37 @@ chooseStartingPokemon(userBelt)
       makePokemon(userPokemon[3]),
       makePokemon(userPokemon[4]),
       makePokemon(userPokemon[5]),
-      data.name
+      firstQuestion.name
     );
 
-    return [trainer, difficulty];
-  })
-  .then((players) => {
-    return Promise.all([...players, inquirer.prompt(userStartingPokemon)]);
-  })
-  .then((battleData) => {
-    console.log(battleData);
-    const trainer = battleData[0];
-    const difficulty = battleData[1];
-    const chosenPokemon = battleData[2].chosenPokemon;
+    const opponent = await opponentBelt(difficulty, trainer);
+    const battle = new Battle(trainer, opponent);
 
-    const opponentInfo = opponentChoices(difficulty, trainer, chosenPokemon);
-    const opponent = opponentInfo.opponent;
-    const opponentPokemon = opponentInfo.opponentChoice;
+    let playerChoicePokemon = await playerChoosePokemon(battle);
 
-    console.log(trainer);
-    console.log(chosenPokemon);
-    console.log(opponent);
-    console.log(opponentPokemon);
+    // for (const pokeballPlayer in battle.player.belt) {
+    //   for (const pokeballOpponent in battle.opponent.belt) {
+    //     console.log(battle.player.belt[pokeballPlayer].pokemonInside.name);
+    //     console.log(battle.player.belt[pokeballOpponent].pokemonInside.name);
+    //     console.log(
+    //       "Are they the same?: ",
+    //       battle.player.belt[pokeballPlayer].pokemonInside ===
+    //         battle.player.belt[pokeballOpponent].pokemonInside
+    //     );
+    //   }
+    // }
 
-    const battle = new Battle(
-      trainer,
-      chosenPokemon,
-      opponent,
-      opponentPokemon
-    );
+    // runBattle(battle);
+  } catch (error) {
+    console.log(error);
+  }
+}
 
-    battle.fight();
-  });
+playGame();
+
+// .then((battle) => {
+//   fight(battle);
+// });
 
 /*
  next steps I want to add:
