@@ -1,5 +1,6 @@
 class Battle {
-  constructor(player, opponent) {
+  constructor(difficulty, player, opponent) {
+    this.difficulty = difficulty;
     this.player = player;
     this.opponent = opponent;
     this.playerPokemonFainted = 0;

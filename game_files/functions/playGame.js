@@ -10,7 +10,7 @@ const {
   Battle,
 } = require("../classes/indexClasses");
 const { makePokemon, pokemonByType } = require("./pokemonCreator");
-const opponentBelt = require("./opponentChoices.js");
+const { opponentBelt, opponentFightChoice } = require("./opponentChoices.js");
 
 const userBelt = [
   {
@@ -62,14 +62,12 @@ function pokemonFight(battle, playerChoice) {
   // console.log("Difficulty: ", difficulty);
   // console.log("Player choice: ", playerChoice);
 
-  let pokemonPosition = 0;
-  for (let i = 1; i < 7; i++) {
-    if (battle.player.belt[i].pokemonInside.name === playerChoice.chosenPokemon)
-      pokemonPosition = i;
-  }
   const playerPokemonChosen = playerChoice.chosenPokemon;
-  const opponentPokemonChosen =
-    battle.opponent.belt[pokemonPosition].pokemonInside.name;
+  const opponentPokemonChosen = opponentFightChoice(
+    battle.difficulty,
+    battle.opponent.belt,
+    playerPokemonChosen
+  );
 
   const playerPokemon = battle.player.getPokemon(playerPokemonChosen);
   const opponentPokemon = battle.opponent.getPokemon(opponentPokemonChosen);
@@ -137,20 +135,20 @@ async function runBattle(battle) {
     ) {
       let playerChoice = await playerChoosePokemon(battle);
       pokemonFight(battle, playerChoice);
-    }
 
-    console.log("Player pokemon fainted: ", battle.playerPokemonFainted);
-    console.log("Opponent pokemon fainted: ", battle.opponentPokemonFainted);
+      console.log("Player pokemon fainted: ", battle.playerPokemonFainted);
+      console.log("Opponent pokemon fainted: ", battle.opponentPokemonFainted);
 
-    if (battle.playerPokemonFainted === 6) {
-      console.log(
-        `\n\nAll of ${battle.player.name}'s Pokemon have fainted ... ${battle.opponent.name} wins the Battle !!!`
-      );
-    }
-    if (battle.opponentPokemonFainted === 6) {
-      console.log(
-        `\n\nAll of ${battle.opponent.name}'s Pokemon have fainted ... ${battle.player.name} wins the Battle !!!`
-      );
+      if (battle.playerPokemonFainted === 6) {
+        console.log(
+          `\n\nAll of ${battle.player.name}'s Pokemon have fainted ... ${battle.opponent.name} wins the Battle !!!`
+        );
+      }
+      if (battle.opponentPokemonFainted === 6) {
+        console.log(
+          `\n\nAll of ${battle.opponent.name}'s Pokemon have fainted ... ${battle.player.name} wins the Battle !!!`
+        );
+      }
     }
   } catch (err) {
     console.log(err);
@@ -173,24 +171,10 @@ async function playGame() {
       firstQuestion.name
     );
 
-    const opponent = await opponentBelt(difficulty, trainer);
-    const battle = new Battle(trainer, opponent);
+    const opponent = opponentBelt(difficulty, trainer);
+    const battle = new Battle(difficulty, trainer, opponent);
 
-    let playerChoicePokemon = await playerChoosePokemon(battle);
-
-    // for (const pokeballPlayer in battle.player.belt) {
-    //   for (const pokeballOpponent in battle.opponent.belt) {
-    //     console.log(battle.player.belt[pokeballPlayer].pokemonInside.name);
-    //     console.log(battle.player.belt[pokeballOpponent].pokemonInside.name);
-    //     console.log(
-    //       "Are they the same?: ",
-    //       battle.player.belt[pokeballPlayer].pokemonInside ===
-    //         battle.player.belt[pokeballOpponent].pokemonInside
-    //     );
-    //   }
-    // }
-
-    // runBattle(battle);
+    await runBattle(battle);
   } catch (error) {
     console.log(error);
   }

@@ -9,12 +9,14 @@ const {
   Battle,
 } = require("../classes/indexClasses");
 const { makePokemon, pokemonByType } = require("../functions/pokemonCreator");
-const opponentBelt = require("../functions/opponentChoices");
+const {
+  opponentBelt,
+  opponentFightChoice,
+} = require("../functions/opponentChoices");
 
 describe("Test opponentBelt", () => {
   let player;
   beforeEach(() => {
-    makePokemon();
     player = new Trainer(
       makePokemon("Flareon"),
       makePokemon("Vaporeon"),
@@ -36,6 +38,7 @@ describe("Test opponentBelt", () => {
   });
   test("when passed a player and difficulty is 'Easy', return opponent with a belt of pokemon that are not the same object player pokemon", () => {
     const opponent = opponentBelt("Easy", player);
+
     // Flareon
     expect(opponent.belt[2].pokemonInside.name).toBe(
       player.belt[1].pokemonInside.name

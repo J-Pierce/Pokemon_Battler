@@ -33,9 +33,7 @@ function opponentBelt(difficulty, player) {
         opponentPokemon[i] = normalPokemonList.shift();
       }
     }
-  }
-
-  if (difficulty === "Easy") {
+  } else if (difficulty === "Easy") {
     for (let i = 1; i < 7; i++) {
       const type = player.belt[i].pokemonInside.type;
 
@@ -62,19 +60,127 @@ function opponentBelt(difficulty, player) {
     "Opponent"
   );
 
-  for (const pokeballPlayer in player.belt) {
-    for (const pokeballOpponent in opponent.belt) {
-      console.log(player.belt[pokeballPlayer].pokemonInside.name);
-      console.log(player.belt[pokeballOpponent].pokemonInside.name);
-      console.log(
-        "Are they the same?: ",
-        player.belt[pokeballPlayer].pokemonInside ===
-          player.belt[pokeballOpponent].pokemonInside
-      );
-    }
-  }
+  // for (const pokeballPlayer in player.belt) {
+  //   for (const pokeballOpponent in opponent.belt) {
+  //     console.log(player.belt[pokeballPlayer].pokemonInside.name);
+  //     console.log(opponent.belt[pokeballOpponent].pokemonInside.name);
+  //     console.log(
+  //       "Are they the same?: ",
+  //       player.belt[pokeballPlayer].pokemonInside ===
+  //         opponent.belt[pokeballOpponent].pokemonInside
+  //     );
+  //   }
+  // }
 
   return opponent;
 }
 
-module.exports = opponentBelt;
+function opponentFightChoice(difficulty, opponentBelt, playerChoice) {
+  let viablePokemon = [];
+  for (const pokeball in opponentBelt) {
+    if (!opponentBelt[pokeball].pokemonInside.hasFainted()) {
+      viablePokemon.push(opponentBelt[pokeball].pokemonInside);
+    }
+  }
+  //console.log(viablePokemon);
+  const opponentType = Object.groupBy(
+    Object.values(viablePokemon),
+    (pokemon) => pokemon.type
+  );
+  const effectiveType = { Fire: "Water", Water: "Grass", Grass: "Fire" };
+  const weakType = { Fire: "Grass", Water: "Fire", Grass: "Water" };
+  const playerType = makePokemon(playerChoice).type;
+  const opponentTypeKeys = Object.keys(opponentType);
+  let opponentChoice;
+  if (difficulty === "Hard") {
+    console.log(opponentType);
+    if (["Fire", "Water", "Grass"].includes(playerType)) {
+      if (opponentTypeKeys.includes(effectiveType[playerType])) {
+        opponentChoice = opponentType[effectiveType[playerType]].shift();
+      } else if (opponentTypeKeys.includes(effectiveType["Normal"])) {
+        opponentChoice = opponentType["Normal"].shift();
+      } else if (opponentTypeKeys.includes(playerType)) {
+        opponentChoice = opponentType[playerType].shift();
+      } else if (opponentTypeKeys.includes(weakType[playerType])) {
+        opponentChoice = opponentType[weakType[playerType]].shift();
+      } else {
+        console.log("No pokemon left to choose");
+      }
+    } else {
+      const typeAmount = [];
+      for (const type in opponentType) {
+        const length = opponentType[type].length;
+        typeAmount.push({ type, length });
+      }
+      typeAmount.sort((a, b) => b.length - a.length);
+
+      if (opponentTypeKeys.includes("Normal")) {
+        opponentChoice = opponentType["Normal"].shift();
+      } else if (typeAmount.length > 0) {
+        opponentChoice = opponentType[typeAmount[0].type].shift();
+      } else {
+        console.log("No pokemon left to choose");
+      }
+    }
+  } else if (difficulty === "Easy") {
+    if (["Fire", "Water", "Grass"].includes(playerType)) {
+      if (opponentTypeKeys.includes(weakType[playerType])) {
+        opponentChoice = opponentType[weakType[playerType]].shift();
+      } else if (opponentTypeKeys.includes("Normal")) {
+        opponentChoice = opponentType["Normal"].shift();
+      } else if (opponentTypeKeys.includes(playerType)) {
+        opponentChoice = opponentType[playerType].shift();
+      } else if (opponentTypeKeys.includes(effectiveType[playerType])) {
+        opponentChoice = opponentType[effectiveType[playerType]].shift();
+      } else {
+        console.log("No pokemon left to choose");
+      }
+    } else {
+      const typeAmount = [];
+      for (const type in opponentType) {
+        const length = opponentType[type].length;
+        typeAmount.push({ type, length });
+      }
+      typeAmount.sort((a, b) => b.length - a.length);
+
+      if (opponentTypeKeys.includes("Normal")) {
+        opponentChoice = opponentType["Normal"].shift();
+      } else if (typeAmount.length > 0) {
+        opponentChoice = opponentType[typeAmount[0].type].shift();
+      } else {
+        console.log("No pokemon left to choose");
+      }
+    }
+  }
+  return opponentChoice.name;
+}
+// if (difficulty === "Easy") {
+//   for (let i = 1; i < 7; i++) {
+
+//     if (["Fire", "Water", "Grass"].includes(type)) {
+//       const weakPokemonList = pokemonTypeList[weakType[type]];
+//       if (weakPokemonList.length > 0) {
+//         opponentPokemon[i] = weakPokemonList.shift();
+//       } else {
+//         opponentPokemon[i] = normalPokemonList.shift();
+//       }
+//     } else {
+//       opponentPokemon[i] = normalPokemonList.shift();
+//     }
+//   }
+// }
+
+// const difficulty = "Hard";
+// const opponent = new Trainer(
+//   makePokemon("Flareon"),
+//   makePokemon("Vaporeon"),
+//   makePokemon("Squirtle"),
+//   makePokemon("Charmander"),
+//   makePokemon("Squirtle"),
+//   makePokemon("Bulbasaur"),
+//   "testOpponent"
+// );
+// const playerChoice = "Rattata";
+// opponentFightChoice(difficulty, opponent.belt, playerChoice);
+
+module.exports = { opponentBelt, opponentFightChoice };
