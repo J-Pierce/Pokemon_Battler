@@ -7,12 +7,14 @@ class Battle {
     this.opponentPokemonFainted = 0;
   }
 
-  attack(attacker, defender) {
+  attack(attacker, defender, attackerMove) {
     const attackerCritChance = attacker.critChance;
     const attackerCritModifier = attacker.critModifier;
     if (defender.isEffectiveAgainst(attacker)) {
       if (Math.random() < attackerCritChance) {
-        defender.takeDamage(attacker.useMove() * 0.75 * attackerCritModifier);
+        defender.takeDamage(
+          attacker.useMove(attackerMove) * 0.75 * attackerCritModifier
+        );
         console.log(
           "\tDamage dealt: ",
           attacker.attackDamage * 0.75 * attackerCritModifier
@@ -21,14 +23,16 @@ class Battle {
         console.log("\tIt's not very effective!");
         console.log(`\t${defender.name}'s HP reduces to ${defender.hitPoints}`);
       } else {
-        defender.takeDamage(attacker.useMove() * 0.75);
+        defender.takeDamage(attacker.useMove(attackerMove) * 0.75);
         console.log("\tDamage dealt: ", attacker.attackDamage * 0.75);
         console.log("\tIt's not very effective!");
         console.log(`\t${defender.name}'s HP reduces to ${defender.hitPoints}`);
       }
     } else if (defender.isWeakTo(attacker)) {
       if (Math.random() < attackerCritChance) {
-        defender.takeDamage(attacker.useMove() * 1.25 * attackerCritModifier);
+        defender.takeDamage(
+          attacker.useMove(attackerMove) * 1.25 * attackerCritModifier
+        );
         console.log(
           "\tDamage dealt: ",
           attacker.attackDamage * 1.25 * attackerCritModifier
@@ -37,14 +41,16 @@ class Battle {
         console.log("\tIt's super effective!");
         console.log(`\t${defender.name}'s HP reduces to ${defender.hitPoints}`);
       } else {
-        defender.takeDamage(attacker.useMove() * 1.25);
+        defender.takeDamage(attacker.useMove(attackerMove) * 1.25);
         console.log("\tDamage dealt: ", attacker.attackDamage * 1.25);
         console.log("\tIt's super effective!");
         console.log(`\t${defender.name}'s HP reduces to ${defender.hitPoints}`);
       }
     } else {
       if (Math.random() < attackerCritChance) {
-        defender.takeDamage(attacker.useMove() * attackerCritModifier);
+        defender.takeDamage(
+          attacker.useMove(attackerMove) * attackerCritModifier
+        );
         console.log(
           "\tDamage dealt: ",
           attacker.attackDamage * attackerCritModifier
@@ -52,7 +58,7 @@ class Battle {
         console.log("\tCritical Hit!");
         console.log(`\t${defender.name}'s HP reduces to ${defender.hitPoints}`);
       } else {
-        defender.takeDamage(attacker.useMove());
+        defender.takeDamage(attacker.useMove(attackerMove));
         console.log("\tDamage dealt: ", attacker.attackDamage);
         console.log(`\t${defender.name}'s HP reduces to ${defender.hitPoints}`);
       }

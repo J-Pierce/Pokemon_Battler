@@ -4,6 +4,7 @@ class Pokeball {
   }
   throw(pokemon = "notCatching") {
     console.log("Throwing Pokeball!");
+
     if (pokemon === "notCatching") {
       console.log(`GO ${this.pokemonInside.name}!!`);
       const returnPokemon = this.pokemonInside;

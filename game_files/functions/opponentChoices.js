@@ -153,6 +153,11 @@ function opponentFightChoice(difficulty, opponentBelt, playerChoice) {
   }
   return opponentChoice.name;
 }
+
+function opponentChooseMove(opponentPokemon) {
+  const opponentMoves = Object.keys(opponentPokemon.moves);
+  return opponentMoves[0];
+}
 // if (difficulty === "Easy") {
 //   for (let i = 1; i < 7; i++) {
 
@@ -182,4 +187,4 @@ function opponentFightChoice(difficulty, opponentBelt, playerChoice) {
 // const playerChoice = "Rattata";
 // opponentFightChoice(difficulty, opponent.belt, playerChoice);
 
-module.exports = { opponentBelt, opponentFightChoice };
+module.exports = { opponentBelt, opponentFightChoice, opponentChooseMove };

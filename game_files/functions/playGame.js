@@ -1,4 +1,5 @@
 const inquirer = require("inquirer");
+
 const {
   Pokemon,
   Normal,
@@ -10,7 +11,11 @@ const {
   Battle,
 } = require("../classes/indexClasses");
 const { makePokemon, pokemonByType } = require("./pokemonCreator");
-const { opponentBelt, opponentFightChoice } = require("./opponentChoices.js");
+const {
+  opponentBelt,
+  opponentFightChoice,
+  opponentChooseMove,
+} = require("./opponentChoices.js");
 
 const userBelt = [
   {
@@ -43,6 +48,15 @@ const userStartingPokemon = [
   },
 ];
 
+const pokemonMoves = [
+  {
+    type: "list",
+    name: "pokemonMove",
+    message: "Which move would you like to use",
+    choices: [],
+  },
+];
+
 function chooseStartingPokemon(question) {
   return inquirer.prompt(question).then((data) => {
     if (data.startingPokemon.length < 6) {
@@ -55,85 +69,6 @@ function chooseStartingPokemon(question) {
       return data;
     }
   });
-}
-
-function pokemonFight(battle, playerChoice) {
-  // console.log("Battle: ", battle);
-  // console.log("Difficulty: ", difficulty);
-  // console.log("Player choice: ", playerChoice);
-
-  const playerPokemonChosen = playerChoice.chosenPokemon;
-  const opponentPokemonChosen = opponentFightChoice(
-    battle.difficulty,
-    battle.opponent.belt,
-    playerPokemonChosen
-  );
-
-  const playerPokemon = battle.player.getPokemon(playerPokemonChosen);
-  const opponentPokemon = battle.opponent.getPokemon(opponentPokemonChosen);
-
-  let faster;
-  let slower;
-
-  if (playerPokemon.speed > opponentPokemon.speed) {
-    faster = playerPokemon;
-    slower = opponentPokemon;
-    console.log(
-      `${battle.player.name}'s Pokemon ${playerPokemon.name} is faster, they attack first!`
-    );
-  } else if (playerPokemon.speed < opponentPokemon.speed) {
-    faster = opponentPokemon;
-    slower = playerPokemon;
-    console.log(
-      `${battle.opponent.name}'s Pokemon ${opponentPokemon.name} is faster, they attack first!`
-    );
-  } else {
-    const rand = Math.random();
-    console.log(`Both Pokemon have the same speed, it's anyones game!`);
-    if (rand < 0.5) {
-      console.log(
-        `${battle.player.name}'s Pokemon ${playerPokemon.name} attacks first!`
-      );
-      faster = playerPokemon;
-      slower = opponentPokemon;
-    } else {
-      console.log(
-        `${battle.opponent.name}'s Pokemon ${opponentPokemon.name} attacks first!`
-      );
-      faster = opponentPokemon;
-      slower = playerPokemon;
-    }
-  }
-  console.log(
-    `\n${playerPokemon.name}'s starting HP: ${playerPokemon.hitPoints}`
-  );
-  console.log(
-    `${opponentPokemon.name}'s starting HP: ${opponentPokemon.hitPoints}`
-  );
-
-  while (!playerPokemon.hasFainted() && !opponentPokemon.hasFainted()) {
-    console.log("\n\nNew Round!:");
-    battle.attack(faster, slower);
-
-    if (!playerPokemon.hasFainted() && !opponentPokemon.hasFainted()) {
-      battle.attack(slower, faster);
-    }
-  }
-  if (playerPokemon.hasFainted() && !opponentPokemon.hasFainted()) {
-    console.log(
-      `\n\n${playerPokemon.name} has fainted, ${opponentPokemon.name} has won the fight!\n\n`
-    );
-    battle.playerPokemonFainted++;
-  }
-  if (!playerPokemon.hasFainted() && opponentPokemon.hasFainted()) {
-    console.log(
-      `\n\n${opponentPokemon.name} has fainted, ${playerPokemon.name} has won the fight!\n\n`
-    );
-    battle.opponentPokemonFainted++;
-  }
-
-  battle.player.catch(playerPokemon);
-  battle.opponent.catch(opponentPokemon);
 }
 
 async function playerChoosePokemon(battle) {
@@ -159,6 +94,116 @@ async function playerChoosePokemon(battle) {
   }
 }
 
+async function playerChooseMove(playerPokemon) {
+  try {
+    const pokemonMoveList = Object.keys(playerPokemon.moves);
+    pokemonMoves[0].choices = pokemonMoveList;
+    const playerMove = await inquirer.prompt(pokemonMoves);
+    return playerMove.pokemonMove;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+async function pokemonFight(battle, playerChoice) {
+  // console.log("Battle: ", battle);
+  // console.log("Difficulty: ", difficulty);
+  // console.log("Player choice: ", playerChoice);
+
+  const playerPokemonChosen = playerChoice.chosenPokemon;
+  const opponentPokemonChosen = opponentFightChoice(
+    battle.difficulty,
+    battle.opponent.belt,
+    playerPokemonChosen
+  );
+
+  const playerPokemon = battle.player.getPokemon(playerPokemonChosen);
+  const opponentPokemon = battle.opponent.getPokemon(opponentPokemonChosen);
+
+  console.log(
+    `\n${playerPokemon.name}'s starting HP: ${playerPokemon.hitPoints}`
+  );
+  console.log(
+    `${opponentPokemon.name}'s starting HP: ${opponentPokemon.hitPoints}`
+  );
+
+  while (!playerPokemon.hasFainted() && !opponentPokemon.hasFainted()) {
+    console.log("\n\nNew Round!:");
+
+    let faster;
+    let fasterMove;
+    let slower;
+    let slowerMove;
+
+    const playerMove = await playerChooseMove(playerPokemon);
+
+    const opponentMove = opponentChooseMove(opponentPokemon);
+
+    if (playerPokemon.speed > opponentPokemon.speed) {
+      faster = playerPokemon;
+      fasterMove = playerMove;
+      slower = opponentPokemon;
+      slowerMove = opponentMove;
+
+      console.log(
+        `${battle.player.name}'s Pokemon ${playerPokemon.name} is faster, they attack first!`
+      );
+    } else if (playerPokemon.speed < opponentPokemon.speed) {
+      faster = opponentPokemon;
+      fasterMove = opponentMove;
+      slower = playerPokemon;
+      slowerMove = playerMove;
+
+      console.log(
+        `${battle.opponent.name}'s Pokemon ${opponentPokemon.name} is faster, they attack first!`
+      );
+    } else {
+      const rand = Math.random();
+      console.log(`Both Pokemon have the same speed, it's anyones game!`);
+      if (rand < 0.5) {
+        faster = playerPokemon;
+        fasterMove = playerMove;
+        slower = opponentPokemon;
+        slowerMove = opponentMove;
+
+        console.log(
+          `${battle.player.name}'s Pokemon ${playerPokemon.name} attacks first!`
+        );
+      } else {
+        faster = opponentPokemon;
+        fasterMove = opponentMove;
+        slower = playerPokemon;
+        slowerMove = playerMove;
+
+        console.log(
+          `${battle.opponent.name}'s Pokemon ${opponentPokemon.name} attacks first!`
+        );
+      }
+    }
+
+    battle.attack(faster, slower, fasterMove);
+
+    if (!playerPokemon.hasFainted() && !opponentPokemon.hasFainted()) {
+      battle.attack(slower, faster, slowerMove);
+    }
+  }
+  if (playerPokemon.hasFainted() && !opponentPokemon.hasFainted()) {
+    console.log(
+      `\n\n${playerPokemon.name} has fainted, ${opponentPokemon.name} has won the fight!\n\n`
+    );
+    battle.playerPokemonFainted++;
+  }
+  if (!playerPokemon.hasFainted() && opponentPokemon.hasFainted()) {
+    console.log(
+      `\n\n${opponentPokemon.name} has fainted, ${playerPokemon.name} has won the fight!\n\n`
+    );
+    battle.opponentPokemonFainted++;
+  }
+
+  battle.player.catch(playerPokemon);
+  battle.opponent.catch(opponentPokemon);
+}
+
 async function runBattle(battle) {
   try {
     while (
@@ -166,10 +211,7 @@ async function runBattle(battle) {
       battle.opponentPokemonFainted < 6
     ) {
       let playerChoice = await playerChoosePokemon(battle);
-      pokemonFight(battle, playerChoice);
-
-      console.log("Player pokemon fainted: ", battle.playerPokemonFainted);
-      console.log("Opponent pokemon fainted: ", battle.opponentPokemonFainted);
+      await pokemonFight(battle, playerChoice);
 
       if (battle.playerPokemonFainted === 6) {
         console.log(
@@ -230,9 +272,9 @@ playGame();
 Recommended next steps:
 ✅ critical hit system randomly awards pokemon triple damage
 - ability to swap pokemon mid battle, uses up attack for that round
-- pokemon have multiple moves user can select each round
-    - move modifies attack damage
-    - moves have a finite amount of uses determined by its PP (power points)
+✅ pokemon have multiple moves user can select each round
+    ✅ move modifies attack damage
+    ✅moves have a finite amount of uses determined by its PP (power points)
     - once PP runs out move cant be used
     - when all moves have run out pokemon 'struggles' damaging itself with its base attack damage
 */

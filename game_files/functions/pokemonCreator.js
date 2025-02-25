@@ -11,14 +11,18 @@ const {
 
 const critChance = 0.05;
 const critModifier = 3;
-
 function makePokemon(pokemonName = "Empty") {
   const pokemonList = {
     Eevee: new Normal(
       "Eevee",
       55,
       18,
-      "Headbutt",
+      {
+        Headbutt: { damageModifier: 1, type: "normal", powerPoints: 5 },
+        move2: { damageModifier: 1, type: "normal", powerPoints: 5 },
+        move3: { damageModifier: 1, type: "normal", powerPoints: 5 },
+        move4: { damageModifier: 1, type: "normal", powerPoints: 5 },
+      },
       1.2,
       critChance,
       critModifier
@@ -27,7 +31,16 @@ function makePokemon(pokemonName = "Empty") {
       "Flareon",
       65,
       20,
-      "Fire blast",
+      {
+        "Fire blast": {
+          damageModifier: 1,
+          type: "normal",
+          powerPoints: 5,
+        },
+        move2: { damageModifier: 1, type: "normal", powerPoints: 5 },
+        move3: { damageModifier: 1, type: "normal", powerPoints: 5 },
+        move4: { damageModifier: 1, type: "normal", powerPoints: 5 },
+      },
       0.9,
       critChance,
       critModifier
@@ -36,7 +49,16 @@ function makePokemon(pokemonName = "Empty") {
       "Vaporeon",
       70,
       19,
-      "Hydro pump",
+      {
+        "Hydro pump": {
+          damageModifier: 1,
+          type: "normal",
+          powerPoints: 5,
+        },
+        move2: { damageModifier: 1, type: "normal", powerPoints: 5 },
+        move3: { damageModifier: 1, type: "normal", powerPoints: 5 },
+        move4: { damageModifier: 1, type: "normal", powerPoints: 5 },
+      },
       1,
       critChance,
       critModifier
@@ -45,7 +67,16 @@ function makePokemon(pokemonName = "Empty") {
       "Leafeon",
       65,
       17,
-      "Giga drain",
+      {
+        "Giga drain": {
+          damageModifier: 1,
+          type: "normal",
+          powerPoints: 5,
+        },
+        move2: { damageModifier: 1, type: "normal", powerPoints: 5 },
+        move3: { damageModifier: 1, type: "normal", powerPoints: 5 },
+        move4: { damageModifier: 1, type: "normal", powerPoints: 5 },
+      },
       0.8,
       critChance,
       critModifier
@@ -54,7 +85,16 @@ function makePokemon(pokemonName = "Empty") {
       "Charmander",
       44,
       17,
-      "Flamethrower",
+      {
+        Flamethrower: {
+          damageModifier: 1,
+          type: "normal",
+          powerPoints: 5,
+        },
+        move2: { damageModifier: 1, type: "normal", powerPoints: 5 },
+        move3: { damageModifier: 1, type: "normal", powerPoints: 5 },
+        move4: { damageModifier: 1, type: "normal", powerPoints: 5 },
+      },
       1.1,
       critChance,
       critModifier
@@ -63,7 +103,12 @@ function makePokemon(pokemonName = "Empty") {
       "Squirtle",
       44,
       16,
-      "Surf",
+      {
+        Surf: { damageModifier: 1, type: "normal", powerPoints: 5 },
+        move2: { damageModifier: 1, type: "normal", powerPoints: 5 },
+        move3: { damageModifier: 1, type: "normal", powerPoints: 5 },
+        move4: { damageModifier: 1, type: "normal", powerPoints: 5 },
+      },
       0.7,
       critChance,
       critModifier
@@ -72,7 +117,16 @@ function makePokemon(pokemonName = "Empty") {
       "Bulbasaur",
       45,
       16,
-      "Razor leaf",
+      {
+        "Razor leaf": {
+          damageModifier: 1,
+          type: "normal",
+          powerPoints: 5,
+        },
+        move2: { damageModifier: 1, type: "normal", powerPoints: 5 },
+        move3: { damageModifier: 1, type: "normal", powerPoints: 5 },
+        move4: { damageModifier: 1, type: "normal", powerPoints: 5 },
+      },
       1.3,
       critChance,
       critModifier
@@ -81,7 +135,12 @@ function makePokemon(pokemonName = "Empty") {
       "Rattata",
       30,
       56,
-      "Tackle",
+      {
+        Tackle: { damageModifier: 1, type: "normal", powerPoints: 5 },
+        move2: { damageModifier: 1, type: "normal", powerPoints: 5 },
+        move3: { damageModifier: 1, type: "normal", powerPoints: 5 },
+        move4: { damageModifier: 1, type: "normal", powerPoints: 5 },
+      },
       0.5,
       critChance,
       critModifier

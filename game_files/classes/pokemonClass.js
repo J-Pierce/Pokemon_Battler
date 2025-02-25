@@ -3,7 +3,7 @@ class Pokemon {
     name,
     hitPoints,
     attackDamage,
-    move,
+    moves,
     speed,
     critChance,
     critModifier
@@ -11,7 +11,7 @@ class Pokemon {
     this.name = name;
     this.hitPoints = hitPoints;
     this.attackDamage = attackDamage;
-    this.move = move;
+    this.moves = moves;
     this.speed = speed;
     this.critChance = critChance;
     this.critModifier = critModifier;
@@ -21,9 +21,15 @@ class Pokemon {
       this.hitPoints -= damage;
     } else this.hitPoints = 0;
   }
-  useMove() {
-    console.log(`\n\t${this.name} used ${this.move}`);
-    return this.attackDamage;
+  useMove(move) {
+    if (this.moves[move].powerPoints > 0) {
+      console.log(`\n\t${this.name} used ${move}`);
+      this.moves[move].powerPoints--;
+      return this.attackDamage * this.moves[move].damageModifier;
+    } else {
+      console.log(`${move} has now power points left ... choose another move!`)
+      
+    }
   }
   hasFainted() {
     if (this.hitPoints > 0) {

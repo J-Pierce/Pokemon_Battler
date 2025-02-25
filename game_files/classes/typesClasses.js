@@ -5,12 +5,12 @@ class Normal extends Pokemon {
     name,
     hitPoints,
     attackDamage,
-    move,
+    moves,
     speed,
     critChance,
     critModifier
   ) {
-    super(name, hitPoints, attackDamage, move, speed, critChance, critModifier);
+    super(name, hitPoints, attackDamage, moves, speed, critChance, critModifier);
     this.type = "Normal";
   }
   isEffectiveAgainst(pokemon) {
@@ -25,12 +25,12 @@ class Fire extends Pokemon {
     name,
     hitPoints,
     attackDamage,
-    move,
+    moves,
     speed,
     critChance,
     critModifier
   ) {
-    super(name, hitPoints, attackDamage, move, speed, critChance, critModifier);
+    super(name, hitPoints, attackDamage, moves, speed, critChance, critModifier);
     this.type = "Fire";
   }
   isEffectiveAgainst(pokemon) {
@@ -53,12 +53,12 @@ class Water extends Pokemon {
     name,
     hitPoints,
     attackDamage,
-    move,
+    moves,
     speed,
     critChance,
     critModifier
   ) {
-    super(name, hitPoints, attackDamage, move, speed, critChance, critModifier);
+    super(name, hitPoints, attackDamage, moves, speed, critChance, critModifier);
     this.type = "Water";
   }
   isEffectiveAgainst(pokemon) {
@@ -81,12 +81,12 @@ class Grass extends Pokemon {
     name,
     hitPoints,
     attackDamage,
-    move,
+    moves,
     speed,
     critChance,
     critModifier
   ) {
-    super(name, hitPoints, attackDamage, move, speed, critChance, critModifier);
+    super(name, hitPoints, attackDamage, moves, speed, critChance, critModifier);
     this.type = "Grass";
   }
   isEffectiveAgainst(pokemon) {

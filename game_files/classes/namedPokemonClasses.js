@@ -5,13 +5,21 @@ class Rattata extends Normal {
     name,
     hitPoints,
     attackDamage,
-    move,
+    moves,
     speed,
     critChance,
     critModifier
   ) {
-    super(name, hitPoints, attackDamage, move, speed, critChance, critModifier);
-    this.move = move;
+    super(
+      name,
+      hitPoints,
+      attackDamage,
+      moves,
+      speed,
+      critChance,
+      critModifier
+    );
+    this.moves[0].name = "POW!";
   }
 }
 
@@ -20,13 +28,21 @@ class Charmander extends Fire {
     name,
     hitPoints,
     attackDamage,
-    move,
+    moves,
     speed,
     critChance,
     critModifier
   ) {
-    super(name, hitPoints, attackDamage, move, speed, critChance, critModifier);
-    this.move = move;
+    super(
+      name,
+      hitPoints,
+      attackDamage,
+      moves,
+      speed,
+      critChance,
+      critModifier
+    );
+    this.moves[0].name = "POW!";
   }
 }
 
@@ -35,13 +51,21 @@ class Squirtle extends Water {
     name,
     hitPoints,
     attackDamage,
-    move,
+    moves,
     speed,
     critChance,
     critModifier
   ) {
-    super(name, hitPoints, attackDamage, move, speed, critChance, critModifier);
-    this.move = move;
+    super(
+      name,
+      hitPoints,
+      attackDamage,
+      moves,
+      speed,
+      critChance,
+      critModifier
+    );
+    this.moves[0].name = "POW!";
   }
 }
 
@@ -50,13 +74,21 @@ class Bulbasaur extends Grass {
     name,
     hitPoints,
     attackDamage,
-    move,
+    moves,
     speed,
     critChance,
     critModifier
   ) {
-    super(name, hitPoints, attackDamage, move, speed, critChance, critModifier);
-    this.move = move;
+    super(
+      name,
+      hitPoints,
+      attackDamage,
+      moves,
+      speed,
+      critChance,
+      critModifier
+    );
+    this.moves[0].name = "POW!";
   }
 }
 
