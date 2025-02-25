@@ -93,7 +93,6 @@ function opponentFightChoice(difficulty, opponentBelt, playerChoice) {
   const opponentTypeKeys = Object.keys(opponentType);
   let opponentChoice;
   if (difficulty === "Hard") {
-    console.log(opponentType);
     if (["Fire", "Water", "Grass"].includes(playerType)) {
       if (opponentTypeKeys.includes(effectiveType[playerType])) {
         opponentChoice = opponentType[effectiveType[playerType]].shift();

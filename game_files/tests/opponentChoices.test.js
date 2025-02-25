@@ -78,7 +78,6 @@ describe("Test opponentBelt", () => {
     expect(opponent.belt[6].pokemonInside).not.toBe(
       player.belt[5].pokemonInside
     );
-    console.log(opponent.belt[6].pokemonInside, player.belt[4].pokemonInside);
 
     // Bulbasaur
     expect(opponent.belt[4].pokemonInside.name).toBe(
@@ -147,5 +146,50 @@ describe("Test opponentBelt", () => {
     expect(opponent.belt[5].pokemonInside).not.toBe(
       player.belt[6].pokemonInside
     );
+  });
+});
+
+describe.only("Test opponentBelt", () => {
+  let player;
+  beforeEach(() => {
+    player = new Trainer(
+      makePokemon("Flareon"),
+      makePokemon("Vaporeon"),
+      makePokemon("Leafeon"),
+      makePokemon("Charmander"),
+      makePokemon("Squirtle"),
+      makePokemon("Bulbasaur"),
+      "testPlayer"
+    );
+  });
+  test("when passed a player pokemon and difficulty being 'Easy', return opponent pokemon which is weak to the player pokemon", () => {
+    const difficulty = "Easy";
+    const opponent = opponentBelt("Easy", player);
+    const playerChoice = "Squirtle";
+
+    const opponentChoice = opponentFightChoice(
+      difficulty,
+      opponent.belt,
+      playerChoice
+    );
+
+    expect(
+      makePokemon(opponentChoice).isWeakTo(makePokemon(playerChoice))
+    ).toBe(true);
+  });
+  test("when passed a player pokemon and difficulty being 'Hard', return opponent pokemon which is effective against the player pokemon", () => {
+    const difficulty = "Hard";
+    const opponent = opponentBelt("Easy", player);
+    const playerChoice = "Squirtle";
+
+    const opponentChoice = opponentFightChoice(
+      difficulty,
+      opponent.belt,
+      playerChoice
+    );
+
+    expect(
+      makePokemon(opponentChoice).isEffectiveAgainst(makePokemon(playerChoice))
+    ).toBe(true);
   });
 });

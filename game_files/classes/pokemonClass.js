@@ -1,9 +1,18 @@
 class Pokemon {
-  constructor(name, hitPoints, attackDamage, move, critChance, critModifier) {
+  constructor(
+    name,
+    hitPoints,
+    attackDamage,
+    move,
+    speed,
+    critChance,
+    critModifier
+  ) {
     this.name = name;
     this.hitPoints = hitPoints;
     this.attackDamage = attackDamage;
     this.move = move;
+    this.speed = speed;
     this.critChance = critChance;
     this.critModifier = critModifier;
   }

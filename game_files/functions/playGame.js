@@ -72,6 +72,38 @@ function pokemonFight(battle, playerChoice) {
   const playerPokemon = battle.player.getPokemon(playerPokemonChosen);
   const opponentPokemon = battle.opponent.getPokemon(opponentPokemonChosen);
 
+  let faster;
+  let slower;
+
+  if (playerPokemon.speed > opponentPokemon.speed) {
+    faster = playerPokemon;
+    slower = opponentPokemon;
+    console.log(
+      `${battle.player.name}'s Pokemon ${playerPokemon.name} is faster, they attack first!`
+    );
+  } else if (playerPokemon.speed < opponentPokemon.speed) {
+    faster = opponentPokemon;
+    slower = playerPokemon;
+    console.log(
+      `${battle.opponent.name}'s Pokemon ${opponentPokemon.name} is faster, they attack first!`
+    );
+  } else {
+    const rand = Math.random();
+    console.log(`Both Pokemon have the same speed, it's anyones game!`);
+    if (rand < 0.5) {
+      console.log(
+        `${battle.player.name}'s Pokemon ${playerPokemon.name} attacks first!`
+      );
+      faster = playerPokemon;
+      slower = opponentPokemon;
+    } else {
+      console.log(
+        `${battle.opponent.name}'s Pokemon ${opponentPokemon.name} attacks first!`
+      );
+      faster = opponentPokemon;
+      slower = playerPokemon;
+    }
+  }
   console.log(
     `\n${playerPokemon.name}'s starting HP: ${playerPokemon.hitPoints}`
   );
@@ -81,10 +113,10 @@ function pokemonFight(battle, playerChoice) {
 
   while (!playerPokemon.hasFainted() && !opponentPokemon.hasFainted()) {
     console.log("\n\nNew Round!:");
-    battle.attack(playerPokemon, opponentPokemon);
+    battle.attack(faster, slower);
 
     if (!playerPokemon.hasFainted() && !opponentPokemon.hasFainted()) {
-      battle.attack(opponentPokemon, playerPokemon);
+      battle.attack(slower, faster);
     }
   }
   if (playerPokemon.hasFainted() && !opponentPokemon.hasFainted()) {
@@ -188,13 +220,13 @@ playGame();
 
 /*
  next steps I want to add:
-  - choose next pokemon out of ones left (not fainted) to go into battle
-  - carry on choosing and battling until all 6 pokemon in a players belt have fainted
-  - player with pokemon left wins 
+  ✅ choose next pokemon out of ones left (not fainted) to go into battle
+  ✅ carry on choosing and battling until all 6 pokemon in a players belt have fainted
+  ✅ player with pokemon left wins 
 
   ✅ opponent chooses belt pokemon and pokemon to battle automatically (no user input)
   ✅ can set opponents difficulty to effect how strategically effective its choices are
-
+  - add loading spinner (node-spinner)
 Recommended next steps:
 ✅ critical hit system randomly awards pokemon triple damage
 - ability to swap pokemon mid battle, uses up attack for that round
