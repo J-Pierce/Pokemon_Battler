@@ -27,8 +27,7 @@ class Pokemon {
       this.moves[move].powerPoints--;
       return this.attackDamage * this.moves[move].damageModifier;
     } else {
-      console.log(`${move} has now power points left ... choose another move!`)
-      
+      console.log(`${move} has now power points left ... choose another move!`);
     }
   }
   hasFainted() {

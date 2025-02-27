@@ -60,18 +60,6 @@ function opponentBelt(difficulty, player) {
     "Opponent"
   );
 
-  // for (const pokeballPlayer in player.belt) {
-  //   for (const pokeballOpponent in opponent.belt) {
-  //     console.log(player.belt[pokeballPlayer].pokemonInside.name);
-  //     console.log(opponent.belt[pokeballOpponent].pokemonInside.name);
-  //     console.log(
-  //       "Are they the same?: ",
-  //       player.belt[pokeballPlayer].pokemonInside ===
-  //         opponent.belt[pokeballOpponent].pokemonInside
-  //     );
-  //   }
-  // }
-
   return opponent;
 }
 
@@ -155,24 +143,18 @@ function opponentFightChoice(difficulty, opponentBelt, playerChoice) {
 }
 
 function opponentChooseMove(opponentPokemon) {
-  const opponentMoves = Object.keys(opponentPokemon.moves);
-  return opponentMoves[0];
-}
-// if (difficulty === "Easy") {
-//   for (let i = 1; i < 7; i++) {
+  const opponentMoves = {};
+  for (const move in opponentPokemon.moves) {
+    opponentMoves[move] = opponentPokemon.moves[move].powerPoints;
+  }
 
-//     if (["Fire", "Water", "Grass"].includes(type)) {
-//       const weakPokemonList = pokemonTypeList[weakType[type]];
-//       if (weakPokemonList.length > 0) {
-//         opponentPokemon[i] = weakPokemonList.shift();
-//       } else {
-//         opponentPokemon[i] = normalPokemonList.shift();
-//       }
-//     } else {
-//       opponentPokemon[i] = normalPokemonList.shift();
-//     }
-//   }
-// }
+  for (const move in opponentMoves) {
+    if (opponentMoves[move] > 0) {
+      return move;
+    }
+  }
+
+}
 
 // const difficulty = "Hard";
 // const opponent = new Trainer(

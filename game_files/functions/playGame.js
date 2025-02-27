@@ -96,10 +96,38 @@ async function playerChoosePokemon(battle) {
 
 async function playerChooseMove(playerPokemon) {
   try {
-    const pokemonMoveList = Object.keys(playerPokemon.moves);
+    const pokemonMoveList = [];
+    const pokemonPowerPoints = [];
+    for (const move in playerPokemon.moves) {
+      pokemonMoveList.push(
+        `${move}, Attack Mod. ~ ${
+          playerPokemon.moves[move].damageModifier
+        }, PP : ${playerPokemon.moves[move].powerPoints}/${
+          makePokemon(playerPokemon.name).moves[move].powerPoints
+        }`
+      );
+      pokemonPowerPoints.push([move, playerPokemon.moves[move].powerPoints]);
+    }
+
+    if (pokemonPowerPoints.reduce((acc, curr) => acc + curr[1], 0) === 0) {
+      console.log(
+        `${playerPokemon.name} has no energy left! They struggle to do anything`
+      );
+      return "Struggle";
+    }
+
     pokemonMoves[0].choices = pokemonMoveList;
-    const playerMove = await inquirer.prompt(pokemonMoves);
-    return playerMove.pokemonMove;
+    let playerMove = await inquirer.prompt(pokemonMoves);
+
+    const chosenMove = playerMove.pokemonMove.match(/^[a-z\s]+,{0}/gi);
+
+    if (playerPokemon.moves[chosenMove[0]].powerPoints === 0) {
+      console.log(`No energy left to use ${chosenMove}, choose another use!`);
+
+      return await playerChooseMove(playerPokemon);
+    }
+
+    return chosenMove[0];
   } catch (error) {
     console.log(error);
   }
@@ -138,6 +166,9 @@ async function pokemonFight(battle, playerChoice) {
     const playerMove = await playerChooseMove(playerPokemon);
 
     const opponentMove = opponentChooseMove(opponentPokemon);
+
+    console.log("Player move: ", playerMove);
+    console.log("Opponent move: ", opponentMove);
 
     if (playerPokemon.speed > opponentPokemon.speed) {
       faster = playerPokemon;
