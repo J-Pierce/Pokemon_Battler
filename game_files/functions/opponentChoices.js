@@ -8,7 +8,11 @@ const {
   Trainer,
   Battle,
 } = require("../classes/indexClasses");
-const { makePokemon, pokemonByType } = require("./pokemonCreator");
+const {
+  makePokemon,
+  pokemonByType,
+  pokemonStruggle,
+} = require("./pokemonCreator");
 
 function opponentBelt(difficulty, player) {
   const effectiveType = { Fire: "Water", Water: "Grass", Grass: "Fire" };
@@ -144,8 +148,10 @@ function opponentFightChoice(difficulty, opponentBelt, playerChoice) {
 
 function opponentChooseMove(opponentPokemon) {
   const opponentMoves = {};
+  const opponentPowerPoints = [];
   for (const move in opponentPokemon.moves) {
     opponentMoves[move] = opponentPokemon.moves[move].powerPoints;
+    opponentPowerPoints.push([move, opponentPokemon.moves[move].powerPoints]);
   }
 
   for (const move in opponentMoves) {
@@ -154,6 +160,13 @@ function opponentChooseMove(opponentPokemon) {
     }
   }
 
+  if (opponentPowerPoints.reduce((acc, curr) => acc + curr[1], 0) === 0) {
+    console.log(
+      `${opponentPokemon.name} has no energy left! They struggle to do anything`
+    );
+    pokemonStruggle(opponentPokemon);
+    return "Struggle";
+  }
 }
 
 // const difficulty = "Hard";

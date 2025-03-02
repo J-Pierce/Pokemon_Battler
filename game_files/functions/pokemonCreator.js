@@ -21,7 +21,7 @@ Moves:
     damage : 1.1, type : pokemon type, powerPoints : 5
 
 */
-const healthScaling = 100;
+const healthScaling = 6.5;
 const damageScaling = 1;
 const critChance = 0.05;
 const critModifier = 3;
@@ -155,4 +155,11 @@ function pokemonByType() {
   );
 }
 
-module.exports = { makePokemon, pokemonByType };
+function pokemonStruggle(pokemon) {
+  pokemon.moves = {
+    Struggle: { damageModifier: 1, type: "normal", powerPoints: 1 },
+  };
+  return pokemon;
+}
+
+module.exports = { makePokemon, pokemonByType, pokemonStruggle };

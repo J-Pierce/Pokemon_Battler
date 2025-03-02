@@ -1,5 +1,4 @@
 const inquirer = require("inquirer");
-
 const {
   Pokemon,
   Normal,
@@ -10,7 +9,11 @@ const {
   Trainer,
   Battle,
 } = require("../classes/indexClasses");
-const { makePokemon, pokemonByType } = require("./pokemonCreator");
+const {
+  makePokemon,
+  pokemonByType,
+  pokemonStruggle,
+} = require("./pokemonCreator");
 const {
   opponentBelt,
   opponentFightChoice,
@@ -98,36 +101,60 @@ async function playerChooseMove(playerPokemon) {
   try {
     const pokemonMoveList = [];
     const pokemonPowerPoints = [];
+
     for (const move in playerPokemon.moves) {
-      pokemonMoveList.push(
-        `${move}, Attack Mod. ~ ${
-          playerPokemon.moves[move].damageModifier
-        }, PP : ${playerPokemon.moves[move].powerPoints}/${
-          makePokemon(playerPokemon.name).moves[move].powerPoints
-        }`
-      );
       pokemonPowerPoints.push([move, playerPokemon.moves[move].powerPoints]);
+      if (playerPokemon.moves[move].powerPoints > 0) {
+        pokemonMoveList.push(
+          `${move}, Attack Mod. ~ ${playerPokemon.moves[move].damageModifier}, PP : ${playerPokemon.moves[move].powerPoints}`
+        );
+      }
     }
-
-    if (pokemonPowerPoints.reduce((acc, curr) => acc + curr[1], 0) === 0) {
+    pokemonMoveList.push(`Swap Pokemon`);
+    const moveRegex = /^[a-z\s]+,{0}/gi;
+    // Adds moves to inquirer prompt
+    // If only move is struggle
+    if (playerPokemon.moves["Struggle"]) {
       console.log(
-        `${playerPokemon.name} has no energy left! They struggle to do anything`
+        `${playerPokemon.name} has no energy left! They struggle to do anything\n`
       );
-      return "Struggle";
+      pokemonMoves[0].choices = [
+        `Struggle, Attack Mod. ~ 1, PP : 1`,
+        "Swap Pokemon",
+      ];
+    }
+    // If all moves pp is 0
+    else if (pokemonPowerPoints.reduce((acc, curr) => acc + curr[1], 0) === 0) {
+      console.log(
+        `${playerPokemon.name} has no energy left! They struggle to do anything\n`
+      );
+      pokemonStruggle(playerPokemon);
+      pokemonMoves[0].choices = [
+        `Struggle, Attack Mod. ~ 1, PP : 1`,
+        `Swap Pokemon`,
+      ];
+    }
+    // Default move add
+    else {
+      pokemonMoves[0].choices = pokemonMoveList;
     }
 
-    pokemonMoves[0].choices = pokemonMoveList;
-    let playerMove = await inquirer.prompt(pokemonMoves);
+    // Ask player question
 
-    const chosenMove = playerMove.pokemonMove.match(/^[a-z\s]+,{0}/gi);
+    const playerMove = await inquirer.prompt(pokemonMoves);
+    const chosenMove = playerMove.pokemonMove.match(moveRegex);
 
-    if (playerPokemon.moves[chosenMove[0]].powerPoints === 0) {
-      console.log(`No energy left to use ${chosenMove}, choose another use!`);
-
-      return await playerChooseMove(playerPokemon);
+    // Return chosen move
+    if (chosenMove[0] === "Swap Pokemon") {
+      return chosenMove[0];
+    } else if (playerPokemon.moves[chosenMove[0]]) {
+      if (playerPokemon.moves[chosenMove[0]].powerPoints === 0) {
+        console.log(`No energy left to use ${chosenMove}, choose another use!`);
+        return await playerChooseMove(playerPokemon);
+      } else {
+        return chosenMove[0];
+      }
     }
-
-    return chosenMove[0];
   } catch (error) {
     console.log(error);
   }
@@ -138,99 +165,105 @@ async function pokemonFight(battle, playerChoice) {
   // console.log("Difficulty: ", difficulty);
   // console.log("Player choice: ", playerChoice);
 
-  const playerPokemonChosen = playerChoice.chosenPokemon;
+  let playerPokemonChosen = playerChoice.chosenPokemon;
   const opponentPokemonChosen = opponentFightChoice(
     battle.difficulty,
     battle.opponent.belt,
     playerPokemonChosen
   );
 
-  const playerPokemon = battle.player.getPokemon(playerPokemonChosen);
+  let playerPokemon = battle.player.getPokemon(playerPokemonChosen);
+
   const opponentPokemon = battle.opponent.getPokemon(opponentPokemonChosen);
 
   console.log(
     `\n${playerPokemon.name}'s starting HP: ${playerPokemon.hitPoints}`
   );
   console.log(
-    `${opponentPokemon.name}'s starting HP: ${opponentPokemon.hitPoints}`
+    `${opponentPokemon.name}'s starting HP: ${opponentPokemon.hitPoints}\n`
   );
 
   while (!playerPokemon.hasFainted() && !opponentPokemon.hasFainted()) {
-    console.log("\n\nNew Round!:");
+    // console.log("\n\nNew Round!:");
 
     let faster;
     let fasterMove;
     let slower;
     let slowerMove;
 
-    const playerMove = await playerChooseMove(playerPokemon);
+    let playerMove = await playerChooseMove(playerPokemon);
 
-    const opponentMove = opponentChooseMove(opponentPokemon);
-
-    console.log("Player move: ", playerMove);
-    console.log("Opponent move: ", opponentMove);
-
-    if (playerPokemon.speed > opponentPokemon.speed) {
-      faster = playerPokemon;
-      fasterMove = playerMove;
-      slower = opponentPokemon;
-      slowerMove = opponentMove;
-
-      console.log(
-        `${battle.player.name}'s Pokemon ${playerPokemon.name} is faster, they attack first!`
-      );
-    } else if (playerPokemon.speed < opponentPokemon.speed) {
-      faster = opponentPokemon;
-      fasterMove = opponentMove;
-      slower = playerPokemon;
-      slowerMove = playerMove;
-
-      console.log(
-        `${battle.opponent.name}'s Pokemon ${opponentPokemon.name} is faster, they attack first!`
+    if (playerMove === "Swap Pokemon") {
+      battle.player.catch(playerPokemon);
+      playerPokemonChosen = await playerChoosePokemon(battle);
+      playerPokemon = battle.player.getPokemon(
+        playerPokemonChosen.chosenPokemon
       );
     } else {
-      const rand = Math.random();
-      console.log(`Both Pokemon have the same speed, it's anyones game!`);
-      if (rand < 0.5) {
+      const opponentMove = opponentChooseMove(opponentPokemon);
+
+      if (playerPokemon.speed > opponentPokemon.speed) {
         faster = playerPokemon;
         fasterMove = playerMove;
         slower = opponentPokemon;
         slowerMove = opponentMove;
 
         console.log(
-          `${battle.player.name}'s Pokemon ${playerPokemon.name} attacks first!`
+          `\n\n${battle.player.name}'s Pokemon ${playerPokemon.name} is faster, they attack first!\n`
         );
-      } else {
+      } else if (playerPokemon.speed < opponentPokemon.speed) {
         faster = opponentPokemon;
         fasterMove = opponentMove;
         slower = playerPokemon;
         slowerMove = playerMove;
 
         console.log(
-          `${battle.opponent.name}'s Pokemon ${opponentPokemon.name} attacks first!`
+          `\n${battle.opponent.name}'s Pokemon ${opponentPokemon.name} is faster, they attack first!\n`
         );
+      } else {
+        const rand = Math.random();
+        console.log(`\nBoth Pokemon have the same speed, it's anyones game!`);
+        if (rand < 0.5) {
+          faster = playerPokemon;
+          fasterMove = playerMove;
+          slower = opponentPokemon;
+          slowerMove = opponentMove;
+
+          console.log(
+            `\n${battle.player.name}'s Pokemon ${playerPokemon.name} attacks first!\n`
+          );
+        } else {
+          faster = opponentPokemon;
+          fasterMove = opponentMove;
+          slower = playerPokemon;
+          slowerMove = playerMove;
+
+          console.log(
+            `\n${battle.opponent.name}'s Pokemon ${opponentPokemon.name} attacks first!\n`
+          );
+        }
+      }
+
+      battle.attack(faster, slower, fasterMove);
+
+      if (!playerPokemon.hasFainted() && !opponentPokemon.hasFainted()) {
+        battle.attack(slower, faster, slowerMove);
+      }
+
+      if (playerPokemon.hasFainted() && !opponentPokemon.hasFainted()) {
+        console.log(
+          `\n\n${playerPokemon.name} has fainted, ${opponentPokemon.name} has won the fight!\n\n`
+        );
+        battle.playerPokemonFainted++;
+      }
+      if (!playerPokemon.hasFainted() && opponentPokemon.hasFainted()) {
+        console.log(
+          `\n\n${opponentPokemon.name} has fainted, ${playerPokemon.name} has won the fight!\n\n`
+        );
+        battle.opponentPokemonFainted++;
       }
     }
-
-    battle.attack(faster, slower, fasterMove);
-
-    if (!playerPokemon.hasFainted() && !opponentPokemon.hasFainted()) {
-      battle.attack(slower, faster, slowerMove);
-    }
   }
-  if (playerPokemon.hasFainted() && !opponentPokemon.hasFainted()) {
-    console.log(
-      `\n\n${playerPokemon.name} has fainted, ${opponentPokemon.name} has won the fight!\n\n`
-    );
-    battle.playerPokemonFainted++;
-  }
-  if (!playerPokemon.hasFainted() && opponentPokemon.hasFainted()) {
-    console.log(
-      `\n\n${opponentPokemon.name} has fainted, ${playerPokemon.name} has won the fight!\n\n`
-    );
-    battle.opponentPokemonFainted++;
-  }
-
   battle.player.catch(playerPokemon);
   battle.opponent.catch(opponentPokemon);
 }
@@ -246,12 +279,12 @@ async function runBattle(battle) {
 
       if (battle.playerPokemonFainted === 6) {
         console.log(
-          `\n\nAll of ${battle.player.name}'s Pokemon have fainted ... ${battle.opponent.name} wins the Battle !!!`
+          `\n\n\t\t\tAll of ${battle.player.name}'s Pokemon have fainted ... ${battle.opponent.name} wins the Battle !!!\n\n\n`
         );
       }
       if (battle.opponentPokemonFainted === 6) {
         console.log(
-          `\n\nAll of ${battle.opponent.name}'s Pokemon have fainted ... ${battle.player.name} wins the Battle !!!`
+          `\n\n\t\t\tAll of ${battle.opponent.name}'s Pokemon have fainted ... ${battle.player.name} wins the Battle !!!\n\n\n`
         );
       }
     }
@@ -287,10 +320,6 @@ async function playGame() {
 
 playGame();
 
-// .then((battle) => {
-//   fight(battle);
-// });
-
 /*
  next steps I want to add:
   ✅ choose next pokemon out of ones left (not fainted) to go into battle
@@ -305,7 +334,7 @@ Recommended next steps:
 - ability to swap pokemon mid battle, uses up attack for that round
 ✅ pokemon have multiple moves user can select each round
     ✅ move modifies attack damage
-    ✅moves have a finite amount of uses determined by its PP (power points)
-    - once PP runs out move cant be used
-    - when all moves have run out pokemon 'struggles' damaging itself with its base attack damage
+    ✅ moves have a finite amount of uses determined by its PP (power points)
+    ✅ once PP runs out move cant be used
+    ✅ when all moves have run out pokemon 'struggles' damaging itself with its base attack damage
 */
