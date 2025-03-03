@@ -19,6 +19,7 @@ const {
   opponentFightChoice,
   opponentChooseMove,
 } = require("./opponentChoices.js");
+const { sleep } = require("../functions/spinner");
 
 const userBelt = [
   {
@@ -141,7 +142,9 @@ async function playerChooseMove(playerPokemon) {
 
     // Ask player question
 
-    const playerMove = await inquirer.prompt(pokemonMoves);
+    const playerMove = await inquirer.prompt(pokemonMoves, {
+      clearPromptOnDone: true,
+    });
     const chosenMove = playerMove.pokemonMove.match(moveRegex);
 
     // Return chosen move
@@ -244,10 +247,10 @@ async function pokemonFight(battle, playerChoice) {
         }
       }
 
-      battle.attack(faster, slower, fasterMove);
+      await battle.attack(faster, slower, fasterMove);
 
       if (!playerPokemon.hasFainted() && !opponentPokemon.hasFainted()) {
-        battle.attack(slower, faster, slowerMove);
+        await battle.attack(slower, faster, slowerMove);
       }
 
       if (playerPokemon.hasFainted() && !opponentPokemon.hasFainted()) {
@@ -264,6 +267,9 @@ async function pokemonFight(battle, playerChoice) {
       }
     }
   }
+
+  await sleep(2000);
+
   battle.player.catch(playerPokemon);
   battle.opponent.catch(opponentPokemon);
 }
@@ -328,10 +334,10 @@ playGame();
 
   ✅ opponent chooses belt pokemon and pokemon to battle automatically (no user input)
   ✅ can set opponents difficulty to effect how strategically effective its choices are
-  - add loading spinner (node-spinner)
+  ✅ add loading spinner (node-spinner)
 Recommended next steps:
 ✅ critical hit system randomly awards pokemon triple damage
-- ability to swap pokemon mid battle, uses up attack for that round
+✅ ability to swap pokemon mid battle, uses up attack for that round
 ✅ pokemon have multiple moves user can select each round
     ✅ move modifies attack damage
     ✅ moves have a finite amount of uses determined by its PP (power points)

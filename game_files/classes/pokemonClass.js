@@ -19,11 +19,16 @@ class Pokemon {
   takeDamage(damage) {
     if (this.hitPoints - damage > 0) {
       this.hitPoints -= damage;
+      this.hitPoints = this.hitPoints.toFixed(2);
     } else this.hitPoints = 0;
   }
   useMove(move) {
+    if (move === "Struggle") {
+      console.log(`\t${this.name} used ${move} ... They hurt themselves`);
+      return this.attackDamage * this.moves[move].damageModifier;
+    }
     if (this.moves[move].powerPoints > 0) {
-      console.log(`\n\t${this.name} used ${move}`);
+      console.log(`\t${this.name} used ${move}`);
       this.moves[move].powerPoints--;
       return this.attackDamage * this.moves[move].damageModifier;
     } else {

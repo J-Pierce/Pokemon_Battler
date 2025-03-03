@@ -21,7 +21,7 @@ Moves:
     damage : 1.1, type : pokemon type, powerPoints : 5
 
 */
-const healthScaling = 6.5;
+const healthScaling = 2;
 const damageScaling = 1;
 const critChance = 0.05;
 const critModifier = 3;
