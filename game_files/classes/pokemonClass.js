@@ -25,12 +25,20 @@ class Pokemon {
   useMove(move) {
     if (move === "Struggle") {
       console.log(`\t${this.name} used ${move} ... They hurt themselves`);
-      return this.attackDamage * this.moves[move].damageModifier;
+      return (
+        this.attackDamage *
+        this.moves[move].damageModifier *
+        (Math.random() * 0.2 + 0.9)
+      );
     }
     if (this.moves[move].powerPoints > 0) {
       console.log(`\t${this.name} used ${move}`);
       this.moves[move].powerPoints--;
-      return this.attackDamage * this.moves[move].damageModifier;
+      return (
+        this.attackDamage *
+        this.moves[move].damageModifier *
+        (Math.random() * 0.2 + 0.9)
+      );
     } else {
       console.log(`${move} has now power points left ... choose another move!`);
     }
