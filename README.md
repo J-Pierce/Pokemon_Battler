@@ -1,5 +1,5 @@
 # Pokemon Battle Game
 
-For this sprint, head to Northcoder's L2C app:
+To run the game, input into your console:
 
-https://l2c.northcoders.com/courses/fun/pokemon-battler
+    npm run play
