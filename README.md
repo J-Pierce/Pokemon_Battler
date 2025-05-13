@@ -28,6 +28,9 @@ To play the game you will need to run:
 
 The minimum recommended versions of modules needed to run the project:
 
-    Node.js     v23.7.0
+    Node.js        v23.7.0
+    cli-spinner    v0.2.10
+    cli-spinners   v3.2.0
+    inquirer       v8.2.6
 
 ---
